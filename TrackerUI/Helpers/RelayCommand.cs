@@ -9,14 +9,8 @@ namespace Tracker.Helpers
 {
     public class RelayCommand : ICommand
     {
-        #region Fields
-
         readonly Action<object> _execute;
         readonly Predicate<object> _canExecute;
-
-        #endregion // Fields
-
-        #region Constructors
 
         public RelayCommand(Action<object> execute)
             : this(execute, null)
@@ -31,9 +25,6 @@ namespace Tracker.Helpers
             _execute = execute;
             _canExecute = canExecute;
         }
-        #endregion // Constructors
-
-        #region ICommand Members
 
         public bool CanExecute(object parameter)
         {
@@ -50,7 +41,5 @@ namespace Tracker.Helpers
         {
             _execute(parameter);
         }
-
-        #endregion // ICommand Members
     }
 }

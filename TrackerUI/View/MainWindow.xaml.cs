@@ -19,7 +19,7 @@ using Tracker;
 using Tracker.Model;
 using Tracker.ViewModel;
 
-namespace TracerDemo
+namespace Tracker
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -31,7 +31,7 @@ namespace Tracker.Model
     public class Destination
     {
         [PrimaryKey, AutoIncrement]
-        public int DestinationId { get; set; }
+        public int ID { get; set; }
         public string DestinationDesc { get; set; }
         public string Notes { get; set; }
     }

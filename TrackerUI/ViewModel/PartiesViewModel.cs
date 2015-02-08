@@ -43,21 +43,48 @@ namespace Tracker.ViewModel
         public PartiesViewModel()
         {
             Parties = database.GetAllActiveParties();
-            this.AddPartyCommand = new RelayCommand(DoSave);
+            this.CheckinParty = new RelayCommand(Checkin);
+            this.AddPartyCommand = new RelayCommand<Party>(DoSave);
+            this.DeleteCommand = new RelayCommand(DoDelete);
+			this.SaveCommand = new RelayCommand<Party>(DoSave);
         }
 
         public RelayCommand CheckinParty { get; set; }
-
-        public RelayCommand AddPartyCommand { get; set; }
+        public RelayCommand<Party> AddPartyCommand { get; set; }
+        public RelayCommand DeleteCommand { get; set; }
+		public RelayCommand<Party> SaveCommand { get; set; }
 
         void Checkin(object param)
         {
             this.SelectedParty.Close();
         }
 
-        void DoSave(object param)
+        void DoSave(Party party)
         {
-            
+            if (SelectedParty.PartyId >= 0)
+            {
+                // this is an update
+                database.Update(SelectedParty);
+            }
+            else
+            {
+                // this is new
+                database.Add(SelectedParty);
+            }
+        }
+
+        void DoDelete(object param)
+        {
+            if (SelectedParty.PartyId >= 0)
+            {
+                // this is a delete
+                database.DeletePartyById(SelectedParty.PartyId);
+            }
+            else
+            {
+                // this is a cancel
+                Parties.Remove(SelectedParty);
+            }
         }
     }
 }

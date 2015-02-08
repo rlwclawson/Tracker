@@ -35,7 +35,8 @@ namespace Tracker.Helpers
 
             Party p = new Party()
             {
-                ID = model.PartyId,
+                // if this is a new party, don't copy the id
+                ID = model.PartyId > 0 ? model.PartyId : 0,
                 PartyCount = model.PartyCount,
                 Destination = model.PartyRoute,
                 Remarks = model.Remarks,

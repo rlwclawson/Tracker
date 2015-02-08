@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Tracker.Helpers
 {
+    // TODO:  this is crap - it should all be injected.  
     public static partial class Constants
     {
         public static int Minutes_Before_Notify = GetConfig<int>("MinutesBeforeWarn", 20);
@@ -45,31 +46,5 @@ namespace Tracker.Helpers
 
             return defaultValue;
         }
-
-        //private static bool GetConfig(string key, bool defaultValue)
-        //{
-        //    string configFromApp = ConfigurationManager.AppSettings.Get(key);
-        //    if (string.IsNullOrWhiteSpace(configFromApp))
-        //    {
-        //        return defaultValue;
-        //    }
-        //    else
-        //    {
-        //        return bool.Parse(configFromApp);
-        //    }
-        //}
-
-        //private static int GetConfig(string key, int defaultValue) 
-        //{
-        //    string configFromApp = ConfigurationManager.AppSettings.Get(key);
-        //    if (string.IsNullOrWhiteSpace(configFromApp))
-        //    {
-        //        return defaultValue;
-        //    }
-        //    else
-        //    {
-        //        return int.Parse(configFromApp);
-        //    }
-        //}
     }
 }

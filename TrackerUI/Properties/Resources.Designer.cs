@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TracerDemo.Properties
+namespace Tracker.Properties
 {
 
 

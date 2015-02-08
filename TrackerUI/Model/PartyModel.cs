@@ -25,8 +25,10 @@ namespace Tracker.Model
         public PartyModel()
         {
             // Set some defaults for a UI created new item - this will be overwritten by anything loaded
-            this.EstimatedArrival = Round(DateTime.Now.AddHours(1));
-            this.ActualDeparture = DateTime.Now;
+            // set field to avoid raising property changed events
+            this.eta = Round(DateTime.Now.AddHours(1));
+            this.actualDeparture = DateTime.Now;
+            this.partyId = -1;
         }
 
         private static DateTime Round(DateTime original)
