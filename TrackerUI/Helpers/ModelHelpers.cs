@@ -35,6 +35,7 @@ namespace Tracker.Helpers
 
             Party p = new Party()
             {
+                ID = model.PartyId,
                 PartyCount = model.PartyCount,
                 Destination = model.PartyRoute,
                 Remarks = model.Remarks,

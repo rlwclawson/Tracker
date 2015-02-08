@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Tracker.Data;
 using Tracker.Helpers;
 using Tracker.Model;
 
@@ -17,6 +18,10 @@ namespace Tracker.ViewModel
 {
     public class PartiesViewModel : DependencyObject
     {
+        // this needs to be injectable or you can't test this
+        private static Database database = new Database(Constants.ActiveStoreageDBConnection);
+
+
         public static readonly DependencyProperty PartiesProperty =
             DependencyProperty.Register("Parties", typeof(ObservableCollection<PartyModel>), typeof(PartiesViewModel), new UIPropertyMetadata(null));
 
@@ -37,7 +42,7 @@ namespace Tracker.ViewModel
 
         public PartiesViewModel()
         {
-            Parties = Data.Database.GetAllActiveParties();
+            Parties = database.GetAllActiveParties();
             this.AddPartyCommand = new RelayCommand(DoSave);
         }
 
