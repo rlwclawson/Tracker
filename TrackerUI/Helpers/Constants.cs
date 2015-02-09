@@ -11,11 +11,27 @@ namespace Tracker.Helpers
     // TODO:  this is crap - it should all be injected.  
     public static partial class Constants
     {
-        public static int Minutes_Before_Notify = GetConfig<int>("MinutesBeforeWarn", 20);
+        public static int Minutes_Before_Notify;
 
-        public static string ActiveStorageLocation = GetConfig("dbLocation",  Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
-        public static string ActiveStoreageDB = GetConfig("dbName", "PartyDB.db3");
-        public static string ActiveStoreageDBConnection = Path.Combine(ActiveStorageLocation, ActiveStoreageDB);
+        public static string ActiveStorageLocation; 
+        public static string ActiveStoreageDB;
+        public static string ActiveStoreageDBConnection;
+
+        static Constants()
+        {
+            ActiveStorageLocation = GetConfig("dbLocation", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TrackerApp"));
+
+            // this might throw - if it does we'll have to rework it. 
+            if (!Directory.Exists(ActiveStorageLocation))
+            {
+                Directory.CreateDirectory(ActiveStorageLocation);
+            }
+
+            ActiveStoreageDB = GetConfig("dbName", "PartyDB.db3");
+            ActiveStoreageDBConnection = Path.Combine(ActiveStorageLocation, ActiveStoreageDB);
+
+            Minutes_Before_Notify                                                                                                                        = GetConfig<int>("MinutesBeforeWarn", 20);
+        }
 
         private static string GetConfig(string key, string defaultValue)
         {

@@ -12,7 +12,7 @@ namespace Tracker.Model
         [PrimaryKey, AutoIncrement]
         public int ID { get; set; }
         public string Veh_Num { get; set; }
-        public int Destination { get; set; }
+        public string Destination { get; set; }
         public int PartyCount { get; set; }
 
         public DateTime ActualDeparture { get; set; }
@@ -34,5 +34,6 @@ namespace Tracker.Model
         public int ID { get; set; }
         public string DestinationDesc { get; set; }
         public string Notes { get; set; }
+        public bool RequiresDetail { get; set; }
     }
 }

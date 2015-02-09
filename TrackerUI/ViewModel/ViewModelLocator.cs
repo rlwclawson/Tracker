@@ -46,6 +46,14 @@ namespace Tracker.ViewModel
             SimpleIoc.Default.Register<PartiesViewModel>();
         }
 
+        public PartiesViewModel Parties
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<PartiesViewModel>();
+            }
+        }
+
         public MainViewModel Main
         {
             get

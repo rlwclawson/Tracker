@@ -16,7 +16,7 @@ namespace Tracker.Helpers
             PartyModel p = new PartyModel()
             {
                 PartyCount = party.PartyCount,
-                PartyRoute = party.Destination,
+                Destination = party.Destination,
                 Remarks = party.Remarks,
                 ActualArrival = party.ActualArrival,
                 EstimatedArrival = party.EstimatedArrival,
@@ -24,6 +24,7 @@ namespace Tracker.Helpers
                 ActualDeparture = party.ActualDeparture,
                 Veh_Num = party.Veh_Num,
                 PartyId = party.ID,
+                IsDirty = false
             };
 
             return p;
@@ -38,7 +39,7 @@ namespace Tracker.Helpers
                 // if this is a new party, don't copy the id
                 ID = model.PartyId > 0 ? model.PartyId : 0,
                 PartyCount = model.PartyCount,
-                Destination = model.PartyRoute,
+                Destination = model.Destination,
                 Remarks = model.Remarks,
                 ActualArrival = model.ActualArrival,
                 EstimatedArrival = model.EstimatedArrival,

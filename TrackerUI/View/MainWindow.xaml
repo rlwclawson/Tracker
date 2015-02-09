@@ -26,7 +26,7 @@
             </Style.Triggers>
         </Style>
 
-        <Tracker:PartiesViewModel x:Name="partyCollection" x:Key="partyCollection" />
+        <Tracker:PartiesViewModel x:Name="partyViewModel" x:Key="partyViewModel" />
 
 
     </Window.Resources>
@@ -35,7 +35,7 @@
 
         <DataGrid x:Name="partyInfo" VerticalAlignment="Top" 
 			AutoGenerateColumns="False" 
-			DataContext="{StaticResource partyCollection}"
+			DataContext="{StaticResource partyViewModel}"
 			ItemsSource="{Binding Parties}"
             HorizontalAlignment="Stretch">
 

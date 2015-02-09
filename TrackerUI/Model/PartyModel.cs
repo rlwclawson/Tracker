@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -18,22 +19,40 @@ namespace Tracker.Model
         Overdue
     }
 
-    public class PartyModel : INotifyPropertyChanged
+    public class PartyModel : ObservableObject 
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        Timer updateStatus;
 
         public PartyModel()
         {
             // Set some defaults for a UI created new item - this will be overwritten by anything loaded
             // set field to avoid raising property changed events
-            this.eta = Round(DateTime.Now.AddHours(1));
+
+            this.isDirty = false;
+            this.eta = Round(DateTime.Now.AddHours(2));
             this.actualDeparture = DateTime.Now;
             this.partyId = -1;
+
+            // i dunno about this, but I can't think of anything better right now.
+            updateStatus = new Timer((e) => { this.RaisePropertyChanged(() => Status); }, this, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10));
         }
 
         private static DateTime Round(DateTime original)
         {
             return new DateTime(original.Year, original.Month, original.Day, original.Hour, 0, 0);
+        }
+
+        private bool isDirty;
+        public bool IsDirty
+        {
+            get
+            {
+                return this.isDirty;
+            }
+            set
+            {
+                Set(() => IsDirty, ref this.isDirty, value);
+            }
         }
 
         private int partyId;
@@ -45,8 +64,10 @@ namespace Tracker.Model
             }
             set
             {
-                this.partyId = value;
-                this.RaiseChangeEvent("PartyId");
+                if (Set(() => PartyId, ref this.partyId, value))
+                {
+                    this.IsDirty = true;
+                }
             }
         }
 
@@ -59,22 +80,26 @@ namespace Tracker.Model
             }
             set
             {
-                this.vehNum = value;
-                this.RaiseChangeEvent("Veh_Num");
+                if (Set(() => Veh_Num, ref this.vehNum, value))
+                {
+                    this.IsDirty = true;
+                }
             }
         }
 
-        private int partyRoute;
-        public int PartyRoute
+        private string destination;
+        public string Destination
         {
             get
             {
-                return this.partyRoute;
+                return this.destination;
             }
             set
             {
-                this.partyRoute = value;
-                this.RaiseChangeEvent("PartyRoute");
+                if (Set(() => this.Destination, ref this.destination, value))
+                {
+                    this.IsDirty = true;
+                }
             }
         }
 
@@ -87,8 +112,10 @@ namespace Tracker.Model
             }
             set
             {
-                this.partyCount = value;
-                this.RaiseChangeEvent("PartyCount");
+                if (Set(() => this.PartyCount, ref this.partyCount, value))
+                {
+                    this.IsDirty = true;
+                }
             }
         }
 
@@ -101,8 +128,10 @@ namespace Tracker.Model
             }
             set
             {
-                this.actualDeparture = value;
-                this.RaiseChangeEvent("ActualDeparture");
+                if (Set(() => this.ActualDeparture, ref this.actualDeparture, value))
+                {
+                    this.IsDirty = true;
+                }
             }
         }
 
@@ -115,8 +144,10 @@ namespace Tracker.Model
             }
             set
             {
-                this.actualArrival = value;
-                this.RaiseChangeEvent("ActualArrival");
+                if (Set(() => this.ActualArrival, ref this.actualArrival, value))
+                {
+                    this.IsDirty = true;
+                }
             }
         }
 
@@ -129,8 +160,10 @@ namespace Tracker.Model
             }
             set
             {
-                this.remarks = value;
-                this.RaiseChangeEvent("Remarks");
+                if (Set(() => this.Remarks, ref this.remarks, value))
+                {
+                    this.IsDirty = true;
+                }
             }
         }
 
@@ -143,8 +176,11 @@ namespace Tracker.Model
             }
             set
             {
-                this.eta = value;
-                this.RaiseChangeEvent("EstimatedArrival");
+                if (Set(() => this.EstimatedArrival, ref this.eta, value))
+                {
+                    this.IsDirty = true;
+                    this.RaisePropertyChanged(() => Status);
+                }
             }
         }
 
@@ -157,8 +193,10 @@ namespace Tracker.Model
             }
             set
             {
-                this.closed = value;
-                this.RaiseChangeEvent("Closed");
+                if (Set(() => this.Closed, ref this.closed, value))
+                {
+                    this.IsDirty = true;
+                }
             }
         }
 
@@ -177,15 +215,6 @@ namespace Tracker.Model
         {
             this.ActualArrival = DateTime.Now;
             this.Closed = true;
-        }
-
-        private void RaiseChangeEvent(string property)
-        {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(property));
-                this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-            }
         }
     }
 }

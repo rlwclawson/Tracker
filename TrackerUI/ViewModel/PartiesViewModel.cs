@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Ioc;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,80 +12,163 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Tracker.Data;
 using Tracker.Helpers;
 using Tracker.Model;
 
 namespace Tracker.ViewModel
 {
-    public class PartiesViewModel : DependencyObject
+    public class PartiesViewModel : ViewModelBase 
     {
-        // this needs to be injectable or you can't test this
-        private static Database database = new Database(Constants.ActiveStoreageDBConnection);
+        private IPartyService dataService;
+        private IDestinationService destService;
 
+        [PreferredConstructor]
+        public PartiesViewModel() : 
+            this(
+            (IsInDesignModeStatic ? (IPartyService) new DesignPartyService() : new DatabasePartyService(Constants.ActiveStoreageDBConnection)), 
+            new DatabaseDestinationSevice(Constants.ActiveStoreageDBConnection)
+            ) { }
 
-        public static readonly DependencyProperty PartiesProperty =
-            DependencyProperty.Register("Parties", typeof(ObservableCollection<PartyModel>), typeof(PartiesViewModel), new UIPropertyMetadata(null));
+        public PartiesViewModel(IPartyService dataService, IDestinationService destinationService)
+        {
+            if (dataService == null) throw new ArgumentNullException("dataService");
+            if (dataService == null) throw new ArgumentNullException("destinationService");
+
+            this.destService = destinationService;
+            this.dataService = dataService;
+
+            this.Parties = dataService.GetAllActiveParties();
+            this.Destinations = new ObservableCollection<string>(destinationService.GetDestinations().Select(d => d.DestinationDesc));
+
+            if (IsInDesignMode && this.Parties.Count > 0)
+            {
+                this.SelectedParty = this.Parties[0];
+            }
+
+            //DispatcherTimer timer = new DispatcherTimer();
+            //timer.Interval = TimeSpan.FromMinutes(1);
+            //timer.Tick += (s, e) =>
+            //{
+            //    this.RaisePropertyChanged(() => Parties);
+
+            //};
+        }
 
         public ObservableCollection<PartyModel> Parties
         {
-            get { return (ObservableCollection<PartyModel>)GetValue(PartiesProperty); }
-            set { SetValue(PartiesProperty, value); }
+            get;
+            private set;
         }
 
-        public static readonly DependencyProperty SelectedPartyProperty =
-            DependencyProperty.Register("SelectedParty", typeof(PartyModel), typeof(PartiesViewModel), new UIPropertyMetadata(null));
+        public ObservableCollection<String> Destinations
+        {
+            get;
+            private set;
+        }
 
+        private PartyModel selectedParty;
         public PartyModel SelectedParty
         {
-            get { return (PartyModel)GetValue(SelectedPartyProperty); }
-            set { SetValue(PartiesProperty, value); }
-        }
-
-        public PartiesViewModel()
-        {
-            Parties = database.GetAllActiveParties();
-            this.CheckinParty = new RelayCommand(Checkin);
-            this.AddPartyCommand = new RelayCommand<Party>(DoSave);
-            this.DeleteCommand = new RelayCommand(DoDelete);
-			this.SaveCommand = new RelayCommand<Party>(DoSave);
-        }
-
-        public RelayCommand CheckinParty { get; set; }
-        public RelayCommand<Party> AddPartyCommand { get; set; }
-        public RelayCommand DeleteCommand { get; set; }
-		public RelayCommand<Party> SaveCommand { get; set; }
-
-        void Checkin(object param)
-        {
-            this.SelectedParty.Close();
-        }
-
-        void DoSave(Party party)
-        {
-            if (SelectedParty.PartyId >= 0)
+            get { return this.selectedParty; }
+            set
             {
-                // this is an update
-                database.Update(SelectedParty);
-            }
-            else
-            {
-                // this is new
-                database.Add(SelectedParty);
+               
+                // update the embedded dependancy object
+                if (Set(() => SelectedParty, ref selectedParty, value))
+                {
+                    this.SaveCommand.RaiseCanExecuteChanged();
+                    this.DeleteCommand.RaiseCanExecuteChanged();
+                }
             }
         }
 
-        void DoDelete(object param)
+        private RelayCommand<PartyModel> checkinCommand;
+        public RelayCommand<PartyModel> CheckinParty
         {
-            if (SelectedParty.PartyId >= 0)
+            get
             {
-                // this is a delete
-                database.DeletePartyById(SelectedParty.PartyId);
+                this.SaveCommand.RaiseCanExecuteChanged();
+
+                return this.checkinCommand ?? (
+                    this.checkinCommand = new RelayCommand<PartyModel>(
+                        party =>
+                        {
+                            party.Close();
+                        }));
             }
-            else
+        }
+
+        private RelayCommand<PartyModel> deleteCommand;
+        public RelayCommand<PartyModel> DeleteCommand
+        {
+            get
             {
-                // this is a cancel
-                Parties.Remove(SelectedParty);
+                return this.deleteCommand ?? (
+                    this.deleteCommand = new RelayCommand<PartyModel>(
+                        party =>
+                        {
+                            if (party.PartyId >= 0)
+                            {
+                                // this is a delete - remove from the DB
+                                dataService.DeletePartyById(party.PartyId);
+                            }
+
+                            // update the UI
+                            Parties.Remove(party);
+                        },
+                        party =>
+                        {
+                            if (party == null || SelectedParty == null)
+                            {
+                                return false;
+                            }
+
+                            return true;
+                        }));
+            }
+        }
+
+        private RelayCommand saveCommand;
+        public RelayCommand SaveCommand
+        {
+            get
+            {
+                return saveCommand ?? (
+                    this.saveCommand = new RelayCommand(
+                        () =>
+                        {
+                            foreach (var p in Parties)
+                            {
+                                if (p.IsDirty)
+                                {
+                                    p.IsDirty = false;
+
+                                    if (p.PartyId >= 0)
+                                    {
+                                        this.dataService.Update(p);
+                                    }
+                                    else
+                                    {
+                                        this.dataService.Add(p);
+                                    }
+                                }
+                            }
+
+                            // reset all the selections 
+                            this.SelectedParty = null;
+                        },
+                        () => 
+                        {
+                            foreach (var p in Parties)
+                            {
+                                if (p.IsDirty) return true;
+                            }
+
+                            return false;
+                        }
+                        ));
             }
         }
     }

@@ -15,7 +15,7 @@ namespace TrackerTests
     [TestClass]
     public class DatabaseTests
     {
-        private Database DB;
+        private DatabasePartyService DB;
 
         [ClassInitialize]
         private static void Init()
@@ -26,7 +26,7 @@ namespace TrackerTests
         [TestInitialize]
         public void TestInit()
         {
-            DB = new Database(Constants.ActiveStoreageDBConnection);
+            DB = new DatabasePartyService(Constants.ActiveStoreageDBConnection);
             Assert.IsNotNull(DB);
         }
 
@@ -96,7 +96,7 @@ namespace TrackerTests
 
         }
 
-        private static PartyModel GetModel(string vehId = "abc", int partyCount = 3, int partyRoute = 1, string remarks = "", bool closed = false)
+        private static PartyModel GetModel(string vehId = "abc", int partyCount = 3, string partyDestination = "A destination", string remarks = "", bool closed = false)
         {
             var pm = new PartyModel( )
             {
@@ -104,7 +104,7 @@ namespace TrackerTests
                 Closed = closed,
                 EstimatedArrival = DateTime.Now.AddHours(1),
                 PartyCount = partyCount,
-                PartyRoute = partyRoute,
+                Destination = partyDestination,
                 ActualArrival = DateTime.MinValue,
                 Remarks = remarks,
                 Veh_Num = vehId

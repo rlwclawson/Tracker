@@ -1,30 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using SQLite.Net;
-using Tracker.Model;
+﻿using SQLite.Net;
 using SQLite.Net.Interop;
-using Tracker.Helpers;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Tracker.Helpers;
+using Tracker.Model;
 
 namespace Tracker.Data
 {
-    public class Database
+    public class DatabasePartyService : Tracker.Data.IPartyService
     {
         private static ISQLitePlatform Platform = new SQLite.Net.Platform.Win32.SQLitePlatformWin32();
         private string connectionString;
 
         private SQLiteConnection GetConnection()
         {
-            // BUGBUG: was Constants.ActiveStoreageDBConnection
              SQLiteConnection connection = new SQLiteConnection(Platform, this.connectionString);
              return connection;
         }
 
-        public Database(string connString)
+        public DatabasePartyService(string connString)
         {
             if (string.IsNullOrWhiteSpace(connString))
             {
@@ -37,7 +32,6 @@ namespace Tracker.Data
             using (var connection = GetConnection())
             {
                 connection.CreateTable<Party>(CreateFlags.AutoIncPK);
-                connection.CreateTable<Destination>(CreateFlags.AutoIncPK);
             }
         }
 
@@ -114,7 +108,7 @@ namespace Tracker.Data
             return models;
         }
 
-        private void ExecuteQuery(string txtQuery)
+        public void ExecuteQuery(string txtQuery)
         {
             using (var connection = GetConnection())
             {
