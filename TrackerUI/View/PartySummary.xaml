@@ -3,14 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Tracker.ViewModel"
         xmlns:local="clr-namespace:Tracker.View" x:Class="Tracker.View.PartySummary"
-        Title="PartySummary" Height="600" Width="800"
+        Title="PartySummary" Height="600" Width="1000"
         DataContext="{Binding Parties, Source={StaticResource Locator}}">
     <Window.Resources>
     </Window.Resources>
     
 	<Grid ScrollViewer.VerticalScrollBarVisibility="Auto">
 		<StackPanel>
-			<DataGrid HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ItemsSource="{Binding Parties}" SelectedItem="{Binding SelectedParty}" RenderTransformOrigin="-24.583,-8.538" AutoGenerateColumns="False">
+			<DataGrid HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Top" 
+                      ItemsSource="{Binding Parties}" SelectedItem="{Binding SelectedParty}" 
+                      RenderTransformOrigin="-24.583,-8.538" AutoGenerateColumns="False"
+                      CanUserAddRows="False" CanUserDeleteRows="True">
                 <DataGrid.RowStyle>
                     <Style TargetType="{x:Type DataGridRow}">
                         <Setter Property="Margin" Value="2" />
@@ -21,11 +24,11 @@
                             <DataTrigger Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Overdue">
                                 <Setter Property="Background" Value="Red" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Status}" Value="Warn">
+                            <DataTrigger Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Warn">
                                 <Setter Property="Background" Value="Yellow" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Status}" Value="Closed">
-                                <Setter Property="Background" Value="Gray" />
+                            <DataTrigger Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Closed">
+                                <Setter Property="Background" Value="LightGray" />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding Closed}" Value="True">
@@ -54,7 +57,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <Button Command="" CommandParameter="{Binding}" Content="Check-in" />
+                                    <Button Command="{Binding Parties.CheckinParty, Source={StaticResource Locator}}" CommandParameter="{Binding}" Content="Check-in" />
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -65,9 +68,23 @@
                     <DataGridTextColumn Binding="{Binding Remarks}" ClipboardContentBinding="{x:Null}" Header="Remarks"/>
 				</DataGrid.Columns>
 			</DataGrid>
-            
-			<Button Command="{Binding SaveCommand}" Content="Save"/>
-            <Button Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedParty}" Content="Delete" />
+
+            <Grid HorizontalAlignment="Stretch" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Button Command="{Binding AddCommand}" Content="New" Grid.Column="0" />
+                <Button Command="{Binding SaveCommand}" Content="Save" Grid.Column="1"/>
+                <Button Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedParty}" Content="Delete" Grid.Column="2" />
+
+            </Grid>
         </StackPanel>
 	</Grid>
 </Window>

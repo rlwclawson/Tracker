@@ -41,19 +41,6 @@ namespace Tracker.ViewModel
 
             this.Parties = dataService.GetAllActiveParties();
             this.Destinations = new ObservableCollection<string>(destinationService.GetDestinations().Select(d => d.DestinationDesc));
-
-            if (IsInDesignMode && this.Parties.Count > 0)
-            {
-                this.SelectedParty = this.Parties[0];
-            }
-
-            //DispatcherTimer timer = new DispatcherTimer();
-            //timer.Interval = TimeSpan.FromMinutes(1);
-            //timer.Tick += (s, e) =>
-            //{
-            //    this.RaisePropertyChanged(() => Parties);
-
-            //};
         }
 
         public ObservableCollection<PartyModel> Parties
@@ -96,10 +83,26 @@ namespace Tracker.ViewModel
                         party =>
                         {
                             party.Close();
+
+                            this.SaveCommand.RaiseCanExecuteChanged();
+                            this.DeleteCommand.RaiseCanExecuteChanged();
                         }));
             }
         }
 
+        private RelayCommand addCommand;
+        public RelayCommand AddCommand
+        {
+            get
+            {
+                return this.addCommand ?? (
+                    this.addCommand = new RelayCommand(
+                    () =>
+                    {
+                        this.Parties.Add(new PartyModel());
+                    }));
+            }
+        }
         private RelayCommand<PartyModel> deleteCommand;
         public RelayCommand<PartyModel> DeleteCommand
         {
@@ -130,6 +133,7 @@ namespace Tracker.ViewModel
             }
         }
 
+        // TODO: can this be updated to save just the edited row?
         private RelayCommand saveCommand;
         public RelayCommand SaveCommand
         {

@@ -214,6 +214,7 @@ namespace Tracker.Model
         public void Close()
         {
             this.ActualArrival = DateTime.Now;
+            this.Remarks += string.Format("\t Party returned at {0:f}", this.ActualArrival);
             this.Closed = true;
         }
     }
