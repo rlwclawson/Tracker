@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Tracker.Data;
 using Tracker.Model;
 
-namespace Tracker
+namespace Tracker.Data
 {
     public class DesignPartyService : IPartyService
     {
@@ -28,7 +28,7 @@ namespace Tracker
                     ActualDeparture = DateTime.Now,
                     EstimatedArrival = DateTime.Now.AddHours(r.Next(10)),
                     PartyCount = r.Next(8),
-                    Destination = r.Next(10).ToString(),
+                    Destination = "Dundas",
                     Remarks = string.Format("This is party {0}, departed at {1}", "veh " + i, DateTime.Now),
                     Closed = false
                 });

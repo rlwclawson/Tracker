@@ -40,7 +40,7 @@
                 
                 <DataGrid.Columns>
 					<DataGridTextColumn Binding="{Binding Veh_Num}" ClipboardContentBinding="{x:Null}" Header="Party Name / Vehicle #"/>
-					<DataGridTextColumn Binding="{Binding PartyCount}" ClipboardContentBinding="{x:Null}" Header="Party #"/>
+					<DataGridTextColumn Binding="{Binding PartyCount}" ClipboardContentBinding="{x:Null}" Header="Party #" />
                     <DataGridTemplateColumn Header="Destination">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -65,7 +65,7 @@
                     
                     <DataGridTextColumn Binding="{Binding ActualArrival}" ClipboardContentBinding="{x:Null}" Header="Actual Arrival"/>
                     
-                    <DataGridTextColumn Binding="{Binding Remarks}" ClipboardContentBinding="{x:Null}" Header="Remarks"/>
+                    <DataGridTextColumn Binding="{Binding Remarks}" ClipboardContentBinding="{x:Null}" Header="Remarks" Width="*"/>
 				</DataGrid.Columns>
 			</DataGrid>
 
@@ -79,7 +79,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition />
                 </Grid.RowDefinitions>
-
+				
                 <Button Command="{Binding AddCommand}" Content="New" Grid.Column="0" />
                 <Button Command="{Binding SaveCommand}" Content="Save" Grid.Column="1"/>
                 <Button Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedParty}" Content="Delete" Grid.Column="2" />

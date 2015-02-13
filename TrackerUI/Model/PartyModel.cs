@@ -196,6 +196,7 @@ namespace Tracker.Model
                 if (Set(() => this.Closed, ref this.closed, value))
                 {
                     this.IsDirty = true;
+                    this.RaisePropertyChanged(() => Status);
                 }
             }
         }

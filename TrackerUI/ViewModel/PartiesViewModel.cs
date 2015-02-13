@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Collections.Generic;
@@ -165,12 +166,13 @@ namespace Tracker.ViewModel
                         },
                         () => 
                         {
-                            foreach (var p in Parties)
-                            {
-                                if (p.IsDirty) return true;
-                            }
+                            return true;
+                        //    foreach (var p in Parties)
+                        //    {
+                        //        if (p.IsDirty) return true;
+                        //    }
 
-                            return false;
+                        //    return false;
                         }
                         ));
             }
