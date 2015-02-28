@@ -50,8 +50,8 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Binding="{Binding ActualDeparture}" ClipboardContentBinding="{x:Null}" Header="Departure Time"/>
-                    <DataGridTextColumn Binding="{Binding EstimatedArrival}" ClipboardContentBinding="{x:Null}" Header="Estimated Arrival"/>
+                    <DataGridTextColumn Binding="{Binding ActualDeparture, StringFormat=\{0:MM/dd/yy HH:mm\}}" ClipboardContentBinding="{x:Null}" Header="Departure Time" />
+                    <DataGridTextColumn Binding="{Binding EstimatedArrival, StringFormat=\{0:MM/dd/yy HH:mm\}}" ClipboardContentBinding="{x:Null}" Header="Estimated Arrival"/>
 
                     <DataGridTemplateColumn Header="Check In Party">
                         <DataGridTemplateColumn.CellTemplate>
@@ -63,7 +63,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     
-                    <DataGridTextColumn Binding="{Binding ActualArrival}" ClipboardContentBinding="{x:Null}" Header="Actual Arrival"/>
+                    <!--<DataGridTextColumn Binding="{Binding ActualArrival, StringFormat=\{0:dd.MM.yy HH:mm:ss\}}" ClipboardContentBinding="{x:Null}" Header="Actual Arrival"/>-->
                     
                     <DataGridTextColumn Binding="{Binding Remarks}" ClipboardContentBinding="{x:Null}" Header="Remarks" Width="*"/>
 				</DataGrid.Columns>

@@ -12,6 +12,7 @@ namespace Tracker.Helpers
     public static partial class Constants
     {
         public static int Minutes_Before_Notify;
+        public static int Minutes_After_Alarm;
 
         public static string ActiveStorageLocation; 
         public static string ActiveStoreageDB;
@@ -30,7 +31,8 @@ namespace Tracker.Helpers
             ActiveStoreageDB = GetConfig("dbName", "PartyDB.db3");
             ActiveStoreageDBConnection = Path.Combine(ActiveStorageLocation, ActiveStoreageDB);
 
-            Minutes_Before_Notify                                                                                                                        = GetConfig<int>("MinutesBeforeWarn", 20);
+            Minutes_Before_Notify = GetConfig<int>("MinutesBeforeWarn", 20);
+            Minutes_After_Alarm = GetConfig<int>("MinutesAfterAlarm", 15);
         }
 
         private static string GetConfig(string key, string defaultValue)

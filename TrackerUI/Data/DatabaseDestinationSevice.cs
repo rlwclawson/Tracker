@@ -3,7 +3,9 @@ using SQLite.Net.Interop;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Tracker.Model;
@@ -39,17 +41,59 @@ namespace Tracker.Data
 
         public ObservableCollection<Destination> GetDestinations()
         {
-            //ObservableCollection<Destination> data;
+            return new ObservableCollection<Destination>(GetFromLocalFile());
+        }
 
-            //using (var connection = GetConnection())
-            //{
-            //    var dests = connection.Table<Destination>().ToList();
-            //    data = new ObservableCollection<Destination>(dests);
-            //}
+        private IList<Destination> GetFromDB()
+        {
+            ObservableCollection<Destination> data;
 
-            //return data;
+            using (var connection = GetConnection())
+            {
+                var dests = connection.Table<Destination>().ToList();
+                data = new ObservableCollection<Destination>(dests);
+            }
 
-            return new ObservableCollection<Destination>(GetHardCoded());
+            return data;
+        }
+
+        private static List<Destination> GetFromLocalFile()
+        {
+            // file expected in /bin
+            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string path = Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));
+            string loc = Path.Combine(path, "Locations.txt");
+
+            List<Destination> toInsert = new List<Destination>();
+
+            using (FileStream fs = new FileStream(loc, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+
+                    while (!sr.EndOfStream)
+                    {
+                        string s = sr.ReadLine();
+
+                        string[] siteInfo = s.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (siteInfo.Length == 2)
+                        {
+                            Destination d = new Destination()
+                            {
+                                DestinationDesc = siteInfo[0],
+                                RequiresDetail = bool.Parse(siteInfo[1]),
+                                Notes = string.Empty
+                            };
+
+                            toInsert.Add(d);
+                        }
+                    }
+                }
+            }
+
+            return toInsert;
+
         }
 
         private static List<Destination> GetHardCoded()

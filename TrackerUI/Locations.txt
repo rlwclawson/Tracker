@@ -1,0 +1,24 @@
+﻿Dundas, false
+North Mtn, false
+South Mtn, false
+12 SWS / BMEWS, false
+D-Launch, false
+Back beach / D-launch, false
+Secret Place / North Mtn, false
+ICE wall / VORTAC, false
+J-Plant / #4016, false
+Ice wall / Shelter 11 road, false
+Camp Tuto, false
+Waterfall/Uvdle, false
+P-MTN, false
+Mountain Meadow / North Mtn, false
+C-Launch, false
+Icecaves towards Cape Atholl, false
+Cape Atholl, false
+Green valley, false
+Station North / RDAF flights, false
+CFS Alert / CAF flights, false
+NASA flights, false
+CE Cabin - See Remarks!, true
+Other - See Remarks!, true
+Off defense area - See Remarks!, true

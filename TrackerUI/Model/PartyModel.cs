@@ -1,16 +1,11 @@
-﻿using GalaSoft.MvvmLight;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Tracker.Helpers;
-
+﻿
 namespace Tracker.Model
 {
+    using GalaSoft.MvvmLight;
+    using System;
+    using System.Threading;
+    using Tracker.Helpers;
+
     public enum PartyStatus
     {
         Closed,
@@ -19,7 +14,7 @@ namespace Tracker.Model
         Overdue
     }
 
-    public class PartyModel : ObservableObject 
+    public class PartyModel : ObservableObject
     {
         Timer updateStatus;
 
@@ -39,7 +34,7 @@ namespace Tracker.Model
 
         private static DateTime Round(DateTime original)
         {
-            return new DateTime(original.Year, original.Month, original.Day, original.Hour, 0, 0);
+            return new DateTime(original.Year, original.Month, original.Day, original.Minute > 30 ? original.Hour + 1 : original.Hour , 0, 0);
         }
 
         private bool isDirty;
@@ -215,7 +210,15 @@ namespace Tracker.Model
         public void Close()
         {
             this.ActualArrival = DateTime.Now;
-            this.Remarks += string.Format("\t Party returned at {0:f}", this.ActualArrival);
+            if (string.IsNullOrWhiteSpace(this.remarks))
+            {
+                this.Remarks = string.Format("Party returned at {0:f}", this.ActualArrival); 
+            }
+            else
+            {
+                this.Remarks += string.Format(" Party returned at {0:f}", this.ActualArrival);
+            }
+
             this.Closed = true;
         }
     }
