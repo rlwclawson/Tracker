@@ -2,84 +2,92 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Tracker.ViewModel"
-        xmlns:local="clr-namespace:Tracker.View" x:Class="Tracker.View.PartySummary"
+        xmlns:local="clr-namespace:Tracker.View" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="Tracker.View.PartySummary"
         Title="PartySummary" Height="600" Width="1000"
-        DataContext="{Binding Parties, Source={StaticResource Locator}}">
+        >
     <Window.Resources>
     </Window.Resources>
-    
-	<Grid ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+    <Window.DataContext>
+        <Binding Path="Parties" Source="{StaticResource Locator}"/>
+    </Window.DataContext>
+
+    <Grid ScrollViewer.VerticalScrollBarVisibility="Auto">
 		<StackPanel>
-			<DataGrid HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Top" 
-                      ItemsSource="{Binding Parties}" SelectedItem="{Binding SelectedParty}" 
-                      RenderTransformOrigin="-24.583,-8.538" AutoGenerateColumns="False"
-                      CanUserAddRows="False" CanUserDeleteRows="True">
-                <DataGrid.RowStyle>
-                    <Style TargetType="{x:Type DataGridRow}">
-                        <Setter Property="Margin" Value="2" />
-                        <Setter Property="Background" Value="White" />
-                        <Setter Property="IsEnabled" Value="True"/>
+			<DataGrid x:Name="dataGrid" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Top" 
+				ItemsSource="{Binding Parties}" SelectedItem="{Binding SelectedParty}" 
+				RenderTransformOrigin="-24.583,-8.538" AutoGenerateColumns="False"
+				CanUserAddRows="False" CanUserDeleteRows="True">
+				<DataGrid.RowStyle>
+					<Style TargetType="{x:Type DataGridRow}">
+						<Setter Property="Margin" Value="2" />
+						<Setter Property="Background" Value="White" />
+						<Setter Property="IsEnabled" Value="True"/>
 
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Overdue">
-                                <Setter Property="Background" Value="Red" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Warn">
-                                <Setter Property="Background" Value="Yellow" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Closed">
-                                <Setter Property="Background" Value="LightGray" />
-                            </DataTrigger>
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Overdue">
+								<DataTrigger.EnterActions>
+                                    <SoundPlayerAction Source="../tos-intercom.wav" />
+								</DataTrigger.EnterActions>
+								<Setter Property="Background" Value="Red" />
+							</DataTrigger>
 
-                            <DataTrigger Binding="{Binding Closed}" Value="True">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.RowStyle>
+							<DataTrigger Binding="{Binding Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Warn">
+								<Setter Property="Background" Value="Yellow" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Closed">
+								<Setter Property="Background" Value="LightGray" />
+							</DataTrigger>
+
+							<DataTrigger Binding="{Binding Closed}" Value="True">
+								<Setter Property="IsEnabled" Value="False"/>
+							</DataTrigger>
+                             
+						</Style.Triggers>
+					</Style>
+				</DataGrid.RowStyle>
                 
-                <DataGrid.Columns>
-					<DataGridTextColumn Binding="{Binding Veh_Num}" ClipboardContentBinding="{x:Null}" Header="Party Name / Vehicle #"/>
+				<DataGrid.Columns>
+					<DataGridTextColumn x:Name="PartyId" Binding="{Binding Veh_Num}" ClipboardContentBinding="{x:Null}" Header="Party Name / Vehicle #"/>
 					<DataGridTextColumn Binding="{Binding PartyCount}" ClipboardContentBinding="{x:Null}" Header="Party #" />
-                    <DataGridTemplateColumn Header="Destination">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <ComboBox ItemsSource="{Binding Parties.Destinations, Source={StaticResource Locator}}" SelectedItem="{Binding Destination, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn Binding="{Binding ActualDeparture, StringFormat=\{0:MM/dd/yy HH:mm\}}" ClipboardContentBinding="{x:Null}" Header="Departure Time" />
-                    <DataGridTextColumn Binding="{Binding EstimatedArrival, StringFormat=\{0:MM/dd/yy HH:mm\}}" ClipboardContentBinding="{x:Null}" Header="Estimated Arrival"/>
+					<DataGridTemplateColumn Header="Destination">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<StackPanel>
+									<ComboBox ItemsSource="{Binding Parties.Destinations, Source={StaticResource Locator}}" SelectedItem="{Binding Destination, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged" />
+								</StackPanel>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTextColumn Binding="{Binding ActualDeparture, StringFormat=\{0:MM/dd/yy HH:mm\}}" ClipboardContentBinding="{x:Null}" Header="Departure Time" />
+					<DataGridTextColumn Binding="{Binding EstimatedArrival, StringFormat=\{0:MM/dd/yy HH:mm\}}" ClipboardContentBinding="{x:Null}" Header="Estimated Arrival"/>
 
-                    <DataGridTemplateColumn Header="Check In Party">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <Button Command="{Binding Parties.CheckinParty, Source={StaticResource Locator}}" CommandParameter="{Binding}" Content="Check-in" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    
-                    <!--<DataGridTextColumn Binding="{Binding ActualArrival, StringFormat=\{0:dd.MM.yy HH:mm:ss\}}" ClipboardContentBinding="{x:Null}" Header="Actual Arrival"/>-->
-                    
-                    <DataGridTextColumn Binding="{Binding Remarks}" ClipboardContentBinding="{x:Null}" Header="Remarks" Width="*"/>
+					<DataGridTemplateColumn Header="Check In Party">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<StackPanel>
+									<Button Command="{Binding Parties.CheckinParty, Source={StaticResource Locator}}" CommandParameter="{Binding}" Content="Check-in" />
+								</StackPanel>
+							</DataTemplate>
+                            
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+   
+					<DataGridTextColumn Binding="{Binding Remarks}" ClipboardContentBinding="{x:Null}" Header="Remarks" Width="*"/>
 				</DataGrid.Columns>
 			</DataGrid>
 
             <Grid HorizontalAlignment="Stretch" Margin="10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
                     <RowDefinition />
                 </Grid.RowDefinitions>
-				
+
                 <Button Command="{Binding AddCommand}" Content="New" Grid.Column="0" />
                 <Button Command="{Binding SaveCommand}" Content="Save" Grid.Column="1"/>
                 <Button Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedParty}" Content="Delete" Grid.Column="2" />

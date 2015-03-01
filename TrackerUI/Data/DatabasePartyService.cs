@@ -99,7 +99,10 @@ namespace Tracker.Data
 
             using (SQLiteConnection connection = GetConnection())
             {
+                // BUGBUG:  expression compiler blows
+                // var data = connection.Table<Party>().Where(p => p.Closed == false || p.ActualDeparture.Date == DateTime.Today);
                 var data = connection.Table<Party>().Where(p => p.Closed == false);
+
                 var items = data.ToList();
 
                 models = new ObservableCollection<PartyModel>(items.ConvertAll(ModelHelpers.FromPoco));

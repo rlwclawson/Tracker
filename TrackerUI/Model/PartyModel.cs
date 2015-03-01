@@ -201,7 +201,7 @@ namespace Tracker.Model
             get
             {
                 if (this.Closed) return PartyStatus.Closed;
-                else if (DateTime.Now > EstimatedArrival) return PartyStatus.Overdue;
+                else if (DateTime.Now > EstimatedArrival + TimeSpan.FromMinutes(Constants.Minutes_After_Alarm)) return PartyStatus.Overdue;
                 else if (DateTime.Now > EstimatedArrival - TimeSpan.FromMinutes(Constants.Minutes_Before_Notify)) return PartyStatus.Warn;
                 else return PartyStatus.OK;
             }
