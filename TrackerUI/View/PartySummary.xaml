@@ -27,7 +27,7 @@
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Overdue">
 								<DataTrigger.EnterActions>
-                                    <SoundPlayerAction Source="../tos-intercom.wav" />
+                                    <SoundPlayerAction Source="{Binding Parties.AlertSoundPath, Source={StaticResource Locator} }" /> <!-- Source="../tos-intercom.wav" /> -->
 								</DataTrigger.EnterActions>
 								<Setter Property="Background" Value="Red" />
 							</DataTrigger>

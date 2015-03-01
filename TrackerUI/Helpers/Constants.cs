@@ -14,6 +14,8 @@ namespace Tracker.Helpers
         public static int Minutes_Before_Notify;
         public static int Minutes_After_Alarm;
 
+        public static string Alarm_Sound;
+
         public static string ActiveStorageLocation; 
         public static string ActiveStoreageDB;
         public static string ActiveStoreageDBConnection;
@@ -33,6 +35,8 @@ namespace Tracker.Helpers
 
             Minutes_Before_Notify = GetConfig<int>("MinutesBeforeWarn", 20);
             Minutes_After_Alarm = GetConfig<int>("MinutesAfterAlarm", 15);
+
+            Alarm_Sound = GetConfig("AlertSound", "../tos-intercom.wav");
         }
 
         private static string GetConfig(string key, string defaultValue)

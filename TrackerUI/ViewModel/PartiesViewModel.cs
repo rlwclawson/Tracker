@@ -56,6 +56,11 @@ namespace Tracker.ViewModel
             private set;
         }
 
+        public string AlertSoundPath
+        {
+            get { return Constants.Alarm_Sound; }
+        }
+
         private PartyModel selectedParty;
         public PartyModel SelectedParty
         {
