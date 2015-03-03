@@ -6,11 +6,34 @@ namespace Tracker.Model
     using System.Threading;
     using Tracker.Helpers;
 
+    /// <summary>
+    /// The current state of the party
+    /// </summary>
     public enum PartyStatus
     {
+        /// <summary>
+        /// Party has returned and checked in
+        /// </summary>
         Closed,
+
+        /// <summary>
+        /// Party is away, but not overdue
+        /// </summary>
         OK,
+
+        /// <summary>
+        /// Party is nearly at time
+        /// </summary>
         Warn,
+
+        /// <summary>
+        /// Party is past their ETA
+        /// </summary>
+        Late,
+
+        /// <summary>
+        /// Party is beyond the alert threshold
+        /// </summary>
         Overdue
     }
 
@@ -196,12 +219,18 @@ namespace Tracker.Model
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public PartyStatus Status
         {
             get
             {
+                var now = DateTime.Now;
+
                 if (this.Closed) return PartyStatus.Closed;
-                else if (DateTime.Now > EstimatedArrival + TimeSpan.FromMinutes(Constants.Minutes_After_Alarm)) return PartyStatus.Overdue;
+                else if (now > EstimatedArrival + TimeSpan.FromMinutes(Constants.Minutes_After_Alarm)) return PartyStatus.Overdue;
+                else if (now > EstimatedArrival) return PartyStatus.Late;
                 else if (DateTime.Now > EstimatedArrival - TimeSpan.FromMinutes(Constants.Minutes_Before_Notify)) return PartyStatus.Warn;
                 else return PartyStatus.OK;
             }

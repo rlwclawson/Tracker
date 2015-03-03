@@ -25,11 +25,15 @@
 						<Setter Property="IsEnabled" Value="True"/>
 
 						<Style.Triggers>
-							<DataTrigger Binding="{Binding Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Overdue">
-								<DataTrigger.EnterActions>
-                                    <SoundPlayerAction Source="{Binding Parties.AlertSoundPath, Source={StaticResource Locator} }" /> <!-- Source="../tos-intercom.wav" /> -->
-								</DataTrigger.EnterActions>
-								<Setter Property="Background" Value="Red" />
+                            <DataTrigger Binding="{Binding Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Overdue">
+                                <DataTrigger.EnterActions>
+                                    <SoundPlayerAction Source="{Binding Parties.AlertSoundPath, Source={StaticResource Locator} }" />
+                                </DataTrigger.EnterActions>
+                                <Setter Property="Background" Value="Red" />
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Late">
+                                <Setter Property="Background" Value="Red" />
 							</DataTrigger>
 
 							<DataTrigger Binding="{Binding Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="Warn">
